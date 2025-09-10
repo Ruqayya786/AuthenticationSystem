@@ -13,20 +13,18 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      // 1️⃣ Pehle check karo email "profiles" table me exist karta hai ya nahi
       const { data: userData, error: checkError } = await supabase
-        .from("profiles") // apne table ka naam jahan email save hota hai
+        .from("profiles") 
         .select("id")
         .eq("email", email)
         .single();
 
       if (checkError || !userData) {
-        setMessage("❌ This email is not registered. Please sign up first.");
+        setMessage("This email is not registered. Please sign up first.");
         setLoading(false);
         return;
       }
 
-      // 2️⃣ Agar email exist karta hai → reset link bhejo
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: "http://localhost:5173/reset-password",
       });
@@ -38,11 +36,11 @@ export default function ForgotPassword() {
           setMessage("❌ " + error.message);
         }
       } else {
-        setMessage("✅ Please wait... check your email for reset link.");
+        setMessage("Please wait... check your email for reset link.");
       }
     } catch (err) {
       console.error("Unexpected error:", err);
-      setMessage("❌ Something went wrong. Try again.");
+      setMessage(" Something went wrong. Try again.");
     } finally {
       setLoading(false);
     }

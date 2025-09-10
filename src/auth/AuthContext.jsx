@@ -6,13 +6,11 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  // Jab app load ho, check karein user session hai ya nahi
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user || null);
     });
 
-    // Jab bhi auth state change ho, update kar do
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user || null);
@@ -24,7 +22,6 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  // 🔹 Email/Password Login
   const login = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -34,7 +31,6 @@ export function AuthProvider({ children }) {
     setUser(data.user);
   };
 
-  // 🔹 Email/Password Signup
   const signup = async (email, password) => {
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -45,7 +41,6 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  // 🔹 Google Login
   const loginWithGoogle = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -54,7 +49,6 @@ export function AuthProvider({ children }) {
     return data; 
   };
 
-  // 🔹 Logout
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
