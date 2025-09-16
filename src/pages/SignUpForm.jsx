@@ -5,7 +5,6 @@ import InputField from "../components/InputField";
 import Button from "../components/Button";
 import GoogleButton from "../components/GoogleButton";
 
-
 function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -29,14 +28,21 @@ function Signup() {
         email,
         password,
         options: {
-          data: { full_name: name }, 
+          data: { full_name: name }, // custom metadata
         },
       });
-if (!error) {
-  console.log("Signup successful:", data);
-  await supabase.auth.signOut(); 
-  navigate("/login");
-}
+
+      if (error) {
+        console.error("Signup error:", error.message);
+        alert(error.message);
+        return;
+      }
+
+      console.log("Signup successful:", data);
+
+      // ✅ Success message aur login redirect
+      alert("Account created successfully! Please login.");
+      navigate("/login");
     } catch (err) {
       console.error("Unexpected error:", err);
       alert("Something went wrong!");
@@ -51,7 +57,7 @@ if (!error) {
         <h2 className="text-3xl font-semibold text-center mb-4">Signup</h2>
 
         <form className="space-y-4" onSubmit={handleSignup}>
-          {/* Name */}
+          {/* Full Name */}
           <InputField
             type="text"
             placeholder="Full Name"
@@ -93,8 +99,9 @@ if (!error) {
             disabled={loading}
             text={loading ? "Creating Account..." : "Signup"}
           />
-                    <GoogleButton text="SignUp with Google" />
 
+          {/* Google Auth */}
+          <GoogleButton text="SignUp with Google" />
 
           <p className="text-center text-gray-600">
             Already have an account?{" "}
